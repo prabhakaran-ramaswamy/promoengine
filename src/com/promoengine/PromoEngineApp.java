@@ -5,8 +5,7 @@ import com.promoengine.core.PromoEngine;
 public class PromoEngineApp {
 
 	public static void main(String[] args) {
-		
-		PromoEngine promoEngine= new PromoEngine();
-	}
 
+		new PromoEngine();
+	}
 }
