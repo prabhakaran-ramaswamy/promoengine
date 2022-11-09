@@ -1,10 +1,12 @@
 package com.promoengine;
 
+import com.promoengine.core.PromoEngine;
+
 public class PromoEngineApp {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		
+		PromoEngine promoEngine= new PromoEngine();
 	}
 
 }
