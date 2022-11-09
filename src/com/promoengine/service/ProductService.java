@@ -32,11 +32,4 @@ public class ProductService {
 		}
 		return products;
 	}
-
-	public void addTemplateProducts() {
-		addProduct(new Product('A', 50));
-		addProduct(new Product('B', 30));
-		addProduct(new Product('C', 20));
-		addProduct(new Product('D', 15));
-	}
 }

@@ -3,7 +3,6 @@ package com.promoengine.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.promoengine.model.CombinedPromotion;
 import com.promoengine.model.FixedPromotion;
 import com.promoengine.model.PercentPromotion;
 import com.promoengine.model.Product;
@@ -41,20 +40,13 @@ public class PromotionService {
 		return ps;
 	}
 
-	public void addTemplatePromotions() {
-		addPromotion(new FixedPromotion(productService.getProduct('A'), 130, 3));
-		addPromotion(new FixedPromotion(productService.getProduct('B'), 45, 2));
-		char[] c1 = { 'C', 'D' };
-		addPromotion(new CombinedPromotion(productService.getProduct('C'), productService.getProducts(c1), 30));
-	}
-	
-	double calculateFixedPrice(int cquantity, FixedPromotion promotion, Product product) {
+	public double calculateFixedPrice(int cquantity, FixedPromotion promotion, Product product) {
 		int quantity = cquantity / promotion.getQuantity();
 		int re = cquantity % promotion.getQuantity();
 		return (quantity * promotion.getOfferAmount()) + (re * product.getPrice());
 	}
-	
-	double calculatePercentagePrice(int cquantity, PercentPromotion promotion, Product product) {
+
+	public double calculatePercentagePrice(int cquantity, PercentPromotion promotion, Product product) {
 		if (promotion.getQuantity() <= cquantity) {
 			double percentage = ((product.getPrice() * promotion.getPercent()) / 100);
 			return (product.getPrice() * cquantity) - (percentage * cquantity);
