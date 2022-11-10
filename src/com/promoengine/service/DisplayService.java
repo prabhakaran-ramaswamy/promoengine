@@ -2,9 +2,9 @@ package com.promoengine.service;
 
 import java.util.List;
 
-import com.promoengine.cart.CartItem;
+import com.promoengine.cart.FixedItem;
 import com.promoengine.cart.Item;
-import com.promoengine.cart.MergedItem;
+import com.promoengine.cart.CombinedItem;
 import com.promoengine.model.CombinedPromotion;
 import com.promoengine.model.FixedPromotion;
 import com.promoengine.model.Product;
@@ -34,22 +34,22 @@ public class DisplayService {
 		}
 	}
 
-	public void displayCart(List<Item> cartItems, String str) {
+	public void displayCart(List<Item> cartItems, String str, double total) {
 		System.out.println(str);
 		for (Item item : cartItems) {
-			if (item instanceof CartItem) {
-				CartItem ci = (CartItem) item;
+			if (item instanceof FixedItem) {
+				FixedItem ci = (FixedItem) item;
 				System.out.println("SKU : " + ci.getProduct().getSku() + " Quantity: " + ci.getQuantity() + " Price: "
 						+ ci.getPrice());
 			} else {
-				MergedItem mi = (MergedItem) item;
-				String skus = "";
-				for (Product p : mi.getProducts()) {
-					skus += p.getSku() + " ";
-				}
-				System.out.println("SKU : (" + skus + ") Quantity: " + mi.getQuantity() + " Price: " + mi.getPrice());
+				CombinedItem mi = (CombinedItem) item;
+				Product ci = mi.getCombinedItem();
+				Product p =mi.getProduct();
+				System.out.println("SKU : (" + p.getSku()+ "  " +ci.getSku() + ") Quantity: " + mi.getQuantity() + " Price: " + mi.getPrice());
 			}
 		}
+		
+		System.out.println("Total: "+total);
 
 	}
 }

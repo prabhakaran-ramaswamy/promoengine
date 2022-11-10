@@ -2,10 +2,12 @@ package com.promoengine.cart;
 
 import com.promoengine.model.Product;
 
-public class CartItem extends Item {
+public class FixedItem extends Item {
 	Product product;
-	public CartItem(int quantity, double price) {
+	
+	public FixedItem(int quantity, double price, Product product) {
 		super(quantity, price);
+		this.product = product;
 	}
 	public Product getProduct() {
 		return product;
