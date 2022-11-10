@@ -1,12 +1,10 @@
 package com.promoengine.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.promoengine.cart.CartItem;
-import com.promoengine.cart.MergedItem;
+import com.promoengine.cart.FixedItem;
 import com.promoengine.model.BuyItem;
 import com.promoengine.model.CombinedPromotion;
 import com.promoengine.model.FixedPromotion;
@@ -42,42 +40,19 @@ public class PromoEngine {
 	}
 
 	public void buyProducts(List<BuyItem> buyItems) {
-		List<BuyItem> exculudes = new ArrayList<BuyItem>();
+		HashMap<Character, Integer> orders = new HashMap<Character, Integer>();
 		for (BuyItem buy : buyItems) {
-			List<Promotion> availablePromos = promotionService.getAvailablePromos(buy.getSku());
-			if (availablePromos.size() > 0 && !applyFixedAndPercentPromo(buy, availablePromos.get(0))) {
-				buy.setAvailablePromos(availablePromos);
-				exculudes.add(buy);
+			if (orders.containsKey(buy.getSku())) {
+				orders.put(buy.getSku(), orders.get(buy.getSku()) + buy.getQuantity());
+			} else {
+				orders.put(buy.getSku(), buy.getQuantity());
 			}
 		}
-		HashMap<Character, Integer> hashMap = new HashMap<Character, Integer>();
-		if (exculudes.size() > 0) {
-			for (BuyItem buy : buyItems) {
-				if (hashMap.containsKey(buy.getSku())) {
-					hashMap.put(buy.getSku(), hashMap.get(buy.getSku()) + buy.getQuantity());
-				} else {
-					hashMap.put(buy.getSku(), buy.getQuantity());
-				}
-			}
-		}
-		for (Map.Entry<Character, Integer> entry : hashMap.entrySet()) {
-			char key = entry.getKey();
+		for (Map.Entry<Character, Integer> entry : orders.entrySet()) {
+			char sku = entry.getKey();
 			int quantity = entry.getValue();
-			Product product = productService.getProduct(key);
-			List<Promotion> availablePromos = promotionService.getAvailablePromos(key);
-			if (availablePromos.size() > 0) {
-				Promotion promotion = availablePromos.get(0);
-				if (promotion instanceof CombinedPromotion) {
-					List<Product> products = ((CombinedPromotion) promotion).getProducts();
-					double price = 0;
-					for (Product p : products) {
-						price = ((CombinedPromotion) promotion).getOfferAmount();
-						hashMap.put(p.getSku(), hashMap.get(p.getSku()) - 1);
-					}
-					price = price == 0 ? product.getPrice() : price;
-					MergedItem m = new MergedItem(quantity, price * quantity, products);
-					cartService.addToCart(m);
-				}
+			List<Promotion> availablePromos = promotionService.getAvailablePromos(sku);
+			if (availablePromos.size() > 0 && !applyFixedAndPercentPromo(new BuyItem(sku,quantity), availablePromos.get(0))) {
 			}
 		}
 
@@ -87,7 +62,7 @@ public class PromoEngine {
 		Product product = productService.getProduct(buy.getSku());
 		if (promo instanceof FixedPromotion) {
 			double price = promotionService.calculateFixedPrice(buy.getQuantity(), (FixedPromotion) promo, product);
-			CartItem c = new CartItem(buy.getQuantity(), price);
+			FixedItem c = new FixedItem(buy.getQuantity(), price);
 			c.setProduct(product);
 			cartService.addToCart(c);
 			return true;
@@ -95,7 +70,7 @@ public class PromoEngine {
 		if (promo instanceof PercentPromotion) {
 			double price = promotionService.calculatePercentagePrice(buy.getQuantity(), (PercentPromotion) promo,
 					product);
-			CartItem c = new CartItem(buy.getQuantity(), price);
+			FixedItem c = new FixedItem(buy.getQuantity(), price);
 			c.setProduct(product);
 			cartService.addToCart(c);
 			return true;
