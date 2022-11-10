@@ -48,8 +48,8 @@ public class DisplayService {
 				System.out.println("SKU : (" + p.getSku()+ "  " +ci.getSku() + ") Quantity: " + mi.getQuantity() + " Price: " + mi.getPrice());
 			}
 		}
-		
-		System.out.println("Total: "+total);
+		if(total!=0)
+			System.out.println("Total: "+total);
 
 	}
 }
