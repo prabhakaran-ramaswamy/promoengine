@@ -3,10 +3,7 @@ package com.promoengine.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.promoengine.cart.CombinedItem;
-import com.promoengine.cart.FixedItem;
 import com.promoengine.cart.Item;
-import com.promoengine.model.Product;
 
 public class CartService {
 	List<Item> cartItems = new ArrayList<Item>();
